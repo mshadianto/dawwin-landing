@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DAWWIN — Platform audit intelligence berbasis web untuk auditor internal. Mengintegrasikan COSO 2013, IIA Global, dan ISO 31000:2018 diperkuat AI Groq LLaMA 3.3 70B.">
+<meta property="og:title" content="DAWWIN — Audit Intelligence Platform">
+<meta property="og:description" content="Dokumentasi & Analitik Audit Internal berbasis McKinsey/Big 4 framework. COSO 2013 · IIA Global · ISO 31000 · AI-Powered.">
+<meta property="og:url" content="https://mshadianto.github.io/dawwin/">
+<meta name="theme-color" content="#0C1220">
+<title>DAWWIN — Audit Intelligence Platform</title>
+
+<!-- SPEED: preconnect + preload critical fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0C1220;
+  --ink2:#162035;
+  --ink3:#1E2E4A;
+  --gold:#B8953A;
+  --gold2:#D4AF60;
+  --gold3:#EDD898;
+  --bone:#F5F0E8;
+  --smoke:#EDE8DF;
+  --mist:rgba(12,18,32,0.52);
+  --dim:rgba(12,18,32,0.28);
+  --line:rgba(184,149,58,0.15);
+  --line2:rgba(184,149,58,0.08);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Figtree',system-ui,sans-serif;
+  --focus-ring:0 0 0 3px rgba(184,149,58,0.5);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bone);color:var(--ink);overflow-x:hidden;line-height:1.65}
+
+/* ── ACCESSIBILITY: focus styles ── */
+:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;box-shadow:none}
+
+/* ── ACCESSIBILITY: skip link ── */
+.skip-link{
+  position:absolute;top:-100%;left:1rem;z-index:999;
+  background:var(--gold);color:var(--bone);
+  padding:.75rem 1.5rem;font-size:14px;font-weight:600;
+  text-decoration:none;border-radius:0 0 4px 4px;
+  transition:top .2s;
+}
+.skip-link:focus{top:0}
+
+/* ── ACCESSIBILITY: reduced motion ── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bone)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:0 5rem;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(245,240,232,0.92);backdrop-filter:blur(14px);
+  border-bottom:0.5px solid var(--line);
+  transition:box-shadow .3s;
+}
+nav.scrolled{box-shadow:0 1px 24px rgba(12,18,32,.06)}
+.wordmark{display:flex;align-items:center;gap:.55rem;text-decoration:none}
+.wm-ar{font-family:var(--serif);font-size:1.45rem;font-weight:600;color:var(--gold);letter-spacing:.02em}
+.wm-sep{color:var(--line);font-size:20px;opacity:.6}
+.wm-latin{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink);letter-spacing:.14em}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:13px;color:var(--mist);text-decoration:none;letter-spacing:.025em;transition:color .2s}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--ink)}
+.nav-btn{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;
+  padding:.45rem 1.2rem;border:0.5px solid var(--gold);
+  background:transparent;color:var(--gold);cursor:pointer;transition:all .2s;
+  text-decoration:none;display:inline-block;
+}
+.nav-btn:hover,.nav-btn:focus-visible{background:var(--gold);color:var(--bone)}
+.nav-mobile-toggle{display:none;background:none;border:none;cursor:pointer;padding:.25rem}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:8rem 5rem 6rem;position:relative;overflow:hidden;
+}
+.hero-rule{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--line2) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+  background-size:80px 80px;
+}
+.hero-wash{
+  position:absolute;right:0;top:0;bottom:0;width:50%;
+  background:linear-gradient(135deg,var(--smoke) 0%,rgba(237,216,152,.06) 50%,transparent 70%);
+}
+.hero-body{position:relative;max-width:720px}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+  color:var(--gold);text-transform:uppercase;
+  border:0.5px solid var(--line);padding:.3rem .9rem;
+  margin-bottom:2.5rem;
+  animation:fadeUp .6s ease forwards;opacity:0;
+}
+.dot-live{
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+  animation:blink 2s ease-in-out infinite;flex-shrink:0;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+
+.hero-title{
+  font-family:var(--serif);
+  font-size:clamp(3rem,6vw,5.8rem);
+  line-height:1.04;font-weight:500;
+  color:var(--ink);letter-spacing:-.01em;
+  margin-bottom:1.75rem;
+  animation:fadeUp .7s .1s ease forwards;opacity:0;
+}
+.hero-arabic{
+  font-family:var(--serif);font-size:1.6rem;font-weight:400;
+  color:var(--gold2);letter-spacing:.06em;
+  display:block;margin-bottom:.35rem;line-height:1;
+}
+.hero-title em{font-style:italic;color:var(--gold)}
+
+.hero-sub{
+  font-size:16px;font-weight:300;color:var(--mist);
+  max-width:500px;line-height:1.82;margin-bottom:3rem;
+  animation:fadeUp .7s .25s ease forwards;opacity:0;
+}
+
+.hero-actions{
+  display:flex;align-items:center;gap:2rem;flex-wrap:wrap;
+  animation:fadeUp .7s .4s ease forwards;opacity:0;
+}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:var(--gold);color:var(--bone);
+  font-size:13px;font-weight:600;letter-spacing:.05em;
+  padding:.85rem 2rem;text-decoration:none;
+  border:none;cursor:pointer;transition:all .2s;
+  font-family:var(--sans);white-space:nowrap;
+}
+.btn-gold:hover,.btn-gold:focus-visible{background:var(--gold2);transform:translateY(-1px)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:.5rem;
+  color:var(--mist);font-size:13px;letter-spacing:.025em;
+  text-decoration:none;transition:color .2s;
+  background:none;border:none;cursor:pointer;font-family:var(--sans);
+  white-space:nowrap;
+}
+.btn-outline:hover,.btn-outline:focus-visible{color:var(--ink)}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(22px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  background:var(--smoke);
+  border-top:0.5px solid var(--line);
+  border-bottom:0.5px solid var(--line);
+}
+.stat{
+  padding:1.5rem 2rem;border-right:0.5px solid var(--line);
+  display:flex;flex-direction:column;gap:.3rem;
+}
+.stat:last-child{border-right:none}
+.stat-val{
+  font-family:var(--serif);font-size:1.9rem;font-weight:600;
+  color:var(--gold);line-height:1;
+}
+.stat-lbl{font-size:11px;color:var(--mist);letter-spacing:.03em;line-height:1.4}
+
+/* ── SHARED SECTION ── */
+section{padding:6rem 5rem}
+.tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.tag::before{content:'';width:24px;height:0.5px;background:var(--gold);flex-shrink:0}
+.sec-title{
+  font-family:var(--serif);font-size:clamp(2rem,4vw,3.25rem);
+  font-weight:500;line-height:1.1;margin-bottom:1rem;color:var(--ink);
+}
+.sec-desc{font-size:15px;color:var(--mist);max-width:500px;line-height:1.78}
+
+/* ── FITUR UTAMA ── */
+.fitur-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;
+  margin-top:4.5rem;align-items:start;
+}
+.fitur-col-title{
+  font-family:var(--serif);font-size:1.55rem;font-weight:500;
+  color:var(--ink);margin-bottom:1.5rem;padding-bottom:1rem;
+  border-bottom:0.5px solid var(--line);
+}
+.fitur-item{
+  display:flex;gap:1.1rem;padding:1.1rem 0;
+  border-bottom:0.5px solid var(--line);align-items:flex-start;
+}
+.fitur-item:last-child{border-bottom:none}
+.fi-bullet{
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+  flex-shrink:0;margin-top:8px;
+}
+.fi-text h4{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:.25rem}
+.fi-text p{font-size:13px;color:var(--mist);line-height:1.65}
+
+/* ── C4R ── */
+.c4r-section{
+  padding:6rem 5rem;background:var(--ink);color:var(--bone);
+}
+.c4r-section .tag{color:var(--gold2)}
+.c4r-section .tag::before{background:var(--gold2)}
+.c4r-section .sec-title{color:var(--bone)}
+.c4r-section .sec-desc{color:rgba(245,240,232,.5)}
+
+.c4r-flow{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  margin-top:4rem;
+  border:0.5px solid rgba(184,149,58,.18);
+  position:relative;
+}
+.c4r-flow::before{
+  content:'';position:absolute;
+  top:calc(2.5rem + 1px);left:0;right:0;height:0.5px;
+  background:rgba(184,149,58,.1);
+  pointer-events:none;z-index:0;
+}
+.c4r-node{
+  padding:2.5rem 1.5rem;padding-top:2rem;
+  border-right:0.5px solid rgba(184,149,58,.12);
+  text-align:center;position:relative;z-index:1;
+  transition:background .25s;cursor:default;
+}
+.c4r-node:last-child{border-right:none}
+.c4r-node:hover{background:rgba(184,149,58,.05)}
+.c4r-letter{
+  font-family:var(--serif);font-size:3rem;font-weight:600;
+  color:var(--gold);line-height:1;margin-bottom:.4rem;display:block;
+}
+.c4r-word{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--gold2);display:block;margin-bottom:.75rem;
+  text-transform:uppercase;
+}
+.c4r-desc{font-size:13px;color:rgba(245,240,232,.45);line-height:1.65}
+
+/* ── ANALYTICS ── */
+.analytics-section{background:var(--smoke)}
+.analytics-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  margin-top:3.5rem;background:var(--line);
+  border:0.5px solid var(--line);
+}
+.atab{
+  background:var(--bone);padding:1.75rem 1.5rem;
+  transition:background .2s;cursor:default;
+  border-bottom:2px solid transparent;
+}
+.atab:hover{background:var(--smoke);border-bottom-color:var(--gold)}
+.atab-icon{
+  width:32px;height:32px;border:0.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1rem;flex-shrink:0;
+}
+.atab-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:.4rem}
+.atab-desc{font-size:12px;color:var(--mist);line-height:1.65}
+
+/* ── AI SECTION ── */
+.ai-section{background:var(--ink2);color:var(--bone)}
+.ai-section .tag{color:var(--gold2)}
+.ai-section .tag::before{background:var(--gold2)}
+.ai-section .sec-title{color:var(--bone)}
+.ai-section .sec-desc{color:rgba(245,240,232,.5)}
+.ai-layout{
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;
+  margin-top:3.5rem;align-items:center;
+}
+.ai-pill-row{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:2rem}
+.ai-pill{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  padding:.3rem .85rem;border:0.5px solid rgba(184,149,58,.3);
+  color:var(--gold2);
+}
+.terminal{
+  background:rgba(10,16,30,.8);
+  border:0.5px solid rgba(184,149,58,.18);
+  padding:1.5rem;font-family:var(--mono);
+}
+.term-bar{display:flex;gap:.4rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:0.5px solid rgba(184,149,58,.08)}
+.term-dot{width:10px;height:10px;border-radius:50%}
+.td-r{background:#ff5f57}.td-y{background:#ffbd2e}.td-g{background:#28c840}
+.term-line{font-size:12px;line-height:2.1;color:rgba(245,240,232,.4)}
+.term-line .prompt{color:var(--gold)}
+.term-line .cmd{color:rgba(245,240,232,.82)}
+.term-line .out{color:#5dba6a}
+.term-line .comment{color:rgba(245,240,232,.25)}
+.cursor{
+  display:inline-block;width:7px;height:13px;
+  background:var(--gold);animation:blink 1.2s infinite;vertical-align:middle;
+}
+
+/* ── TECH STACK ── */
+.tech-outer{margin-top:3.5rem;display:flex;flex-direction:column;gap:1px;background:var(--line);border:0.5px solid var(--line)}
+.tech-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.tech-card{
+  background:var(--bone);padding:1.75rem 1.5rem;
+  border-bottom:2px solid transparent;transition:all .2s;
+}
+.tech-card:hover{background:var(--smoke);border-bottom-color:var(--gold)}
+.tc-layer{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold);margin-bottom:.4rem;text-transform:uppercase}
+.tc-tech{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:.3rem}
+.tc-sub{font-size:12px;color:var(--mist);line-height:1.6}
+
+/* ── STANDARDS ── */
+.standards-wrap{
+  display:flex;gap:0;margin-top:3.5rem;
+  border:0.5px solid var(--line);
+}
+.std{flex:1;padding:2rem;border-right:0.5px solid var(--line)}
+.std:last-child{border-right:none}
+.std-badge{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  color:var(--gold);border:0.5px solid var(--line);
+  display:inline-block;padding:.25rem .65rem;margin-bottom:1rem;
+  text-transform:uppercase;
+}
+.std h3{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:.5rem}
+.std p{font-size:12.5px;color:var(--mist);line-height:1.68}
+
+/* ── CTA ── */
+.cta-section{
+  background:var(--ink);color:var(--bone);
+  padding:8rem 5rem;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-ring{
+  position:absolute;border-radius:50%;
+  border:0.5px solid rgba(184,149,58,.07);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.cta-content{position:relative;max-width:580px}
+.cta-section .tag{justify-content:center;color:var(--gold2)}
+.cta-section .tag::before{background:var(--gold2)}
+.cta-section .sec-title{color:var(--bone);margin-bottom:1rem}
+.cta-section .sec-desc{color:rgba(245,240,232,.48);margin:0 auto 2.5rem;text-align:center}
+.cta-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:.65rem;margin-bottom:2.75rem}
+.cta-badge{
+  font-family:var(--mono);font-size:10.5px;
+  padding:.28rem .8rem;color:rgba(245,240,232,.4);
+  border:0.5px solid rgba(184,149,58,.18);letter-spacing:.05em;
+}
+.cta-btns{display:flex;gap:1.25rem;justify-content:center;align-items:center;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+footer{
+  padding:2rem 5rem;background:var(--smoke);
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:0.5px solid var(--line);flex-wrap:wrap;gap:1rem;
+}
+.foot-copy{font-size:12px;color:var(--mist)}
+.foot-copy a{color:var(--gold);text-decoration:none}
+.foot-links{display:flex;gap:1.75rem;list-style:none}
+.foot-links a{font-size:12px;color:var(--mist);text-decoration:none;transition:color .2s}
+.foot-links a:hover,.foot-links a:focus-visible{color:var(--ink)}
+
+/* ── SPEED: content-visibility for below-fold sections ── */
+.stats-bar,
+#fitur,
+.c4r-section,
+.analytics-section,
+.ai-section,
+#tech,
+#standar,
+.cta-section{
+  content-visibility:auto;
+  contain-intrinsic-size:auto 600px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 1.75rem}
+  .nav-links{display:none}
+  section{padding:4.5rem 1.75rem}
+  .hero{padding:7rem 1.75rem 4rem}
+  .stats-bar{grid-template-columns:repeat(3,1fr)}
+  .stat:nth-child(4){border-top:0.5px solid var(--line)}
+  .stat:nth-child(5){border-top:0.5px solid var(--line);border-right:none}
+  .fitur-grid{grid-template-columns:1fr;gap:3rem}
+  .c4r-section{padding:4.5rem 1.75rem}
+  .c4r-flow{grid-template-columns:repeat(3,1fr)}
+  .c4r-node:nth-child(4),.c4r-node:nth-child(5){border-top:0.5px solid rgba(184,149,58,.12)}
+  .analytics-grid{grid-template-columns:repeat(2,1fr)}
+  .ai-layout{grid-template-columns:1fr}
+  .tech-row{grid-template-columns:repeat(2,1fr)}
+  .standards-wrap{flex-direction:column}
+  .std{border-right:none;border-bottom:0.5px solid var(--line)}
+  .std:last-child{border-bottom:none}
+  .cta-section{padding:5.5rem 1.75rem}
+  footer{padding:1.75rem;flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ACCESSIBILITY: skip navigation -->
+<a class="skip-link" href="#main-content">Langsung ke konten utama</a>
+
+<!-- ──────────────────── NAV ──────────────────── -->
+<nav id="mainNav" role="navigation" aria-label="Navigasi utama">
+  <a class="wordmark" href="#" aria-label="DAWWIN — Kembali ke beranda">
+    <span class="wm-ar" aria-hidden="true">دوِّن</span>
+    <span class="wm-sep" aria-hidden="true">|</span>
+    <span class="wm-latin">DAWWIN</span>
+  </a>
+  <ul class="nav-links" role="list">
+    <li><a href="#fitur">Fitur</a></li>
+    <li><a href="#analytics">Analytics</a></li>
+    <li><a href="#ai">AI Engine</a></li>
+    <li><a href="#tech">Tech Stack</a></li>
+    <li><a href="#standar">Standar</a></li>
+  </ul>
+  <a class="nav-btn" href="https://mshadianto.github.io/dawwin/" target="_blank" rel="noopener noreferrer" aria-label="Buka live demo DAWWIN di tab baru">Live Demo →</a>
+</nav>
+
+<!-- ──────────────────── HERO ──────────────────── -->
+<section class="hero" id="main-content" role="banner" aria-label="Hero — pengenalan DAWWIN">
+  <div class="hero-rule" aria-hidden="true"></div>
+  <div class="hero-wash" aria-hidden="true"></div>
+  <div class="hero-body">
+
+    <div class="hero-eyebrow" role="status" aria-label="Platform aktif">
+      <div class="dot-live" aria-hidden="true"></div>
+      Audit Intelligence Platform · COSO 2013 · IIA Global · ISO 31000
+    </div>
+
+    <h1 class="hero-title">
+      <span class="hero-arabic" lang="ar" aria-label="Dawwin dalam bahasa Arab">دوِّن</span>
+      Dokumentasi &amp;<br>
+      Analitik Audit<br>
+      <em>Internal</em>
+    </h1>
+
+    <p class="hero-sub">
+      Platform berbasis web untuk auditor internal profesional.
+      Mengintegrasikan COSO 2013, IIA Global Standards, dan ISO 31000:2018
+      dalam satu antarmuka bergaya McKinsey/Big 4 — diperkuat
+      Groq LLaMA 3.3 70B untuk analisis C4R otomatis.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn-gold" href="https://mshadianto.github.io/dawwin/" target="_blank" rel="noopener noreferrer" aria-label="Buka platform DAWWIN di tab baru">
+        Buka Platform
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+      <a class="btn-outline" href="https://github.com/mshadianto/dawwin" target="_blank" rel="noopener noreferrer" aria-label="Lihat repository GitHub DAWWIN di tab baru">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        GitHub Repository
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ──────────────────── STATS ──────────────────── -->
+<div class="stats-bar" role="region" aria-label="Statistik platform">
+  <div class="stat">
+    <div class="stat-val" aria-label="10 tab modul aktif">10</div>
+    <div class="stat-lbl">Tab Modul Aktif</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" aria-label="6 sample LHA reports">6</div>
+    <div class="stat-lbl">Sample LHA Reports</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" aria-label="5 kali 5 risk heatmap matrix">5×5</div>
+    <div class="stat-lbl">Risk Heatmap Matrix</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" aria-label="70 billion LLaMA parameters via Groq">70B</div>
+    <div class="stat-lbl">LLaMA Params via Groq</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" aria-label="MIT open source license">MIT</div>
+    <div class="stat-lbl">Open Source License</div>
+  </div>
+</div>
+
+<!-- ──────────────────── FITUR UTAMA ──────────────────── -->
+<section id="fitur" aria-labelledby="fitur-title">
+  <p class="tag">Fitur Utama</p>
+  <h2 class="sec-title" id="fitur-title">Dua modul besar,<br>satu platform terintegrasi</h2>
+  <p class="sec-desc">Dari dokumentasi penugasan hingga analitik risiko mendalam — DAWWIN menutup seluruh siklus audit internal dalam satu antarmuka.</p>
+
+  <div class="fitur-grid">
+
+    <!-- Kiri: Dokumentasi Audit -->
+    <div role="group" aria-labelledby="doc-title">
+      <div class="fitur-col-title" id="doc-title">Dokumentasi Audit</div>
+      <div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Info Audit</h4>
+            <p>Metadata penugasan lengkap — judul, nomor penugasan, periode, unit kerja, dan komposisi tim audit.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Penilaian COSO</h4>
+            <p>Evaluasi 5 komponen pengendalian internal COSO 2013 dengan visualisasi radar chart yang interaktif.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Temuan C4R</h4>
+            <p>Struktur Condition → Criteria → Cause → Effect → Recommendation standar Big 4, diperkuat AI otomatis.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Observasi</h4>
+            <p>Pencatatan pengamatan minor dan catatan lapangan selama proses audit berlangsung.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Tindak Lanjut</h4>
+            <p>Tracking action plan dengan status Open · In Progress · Closed dan deadline monitoring terstruktur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kanan: LHA Analytics -->
+    <div role="group" aria-labelledby="lha-title">
+      <div class="fitur-col-title" id="lha-title">LHA Analytics</div>
+      <div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Portfolio Overview</h4>
+            <p>Ringkasan eksekutif seluruh LHA: root cause taxonomy, risk exposure map, dan red flag analysis.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Risk Management 5×5</h4>
+            <p>Heatmap probabilitas × dampak, risk appetite line, dan cross-tabulation matrix untuk pemetaan komprehensif.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>Fraud Detection</h4>
+            <p>Pattern intelligence engine, forensic indicator registry, dan threat scoring berbasis data histori.</p>
+          </div>
+        </div>
+        <div class="fitur-item">
+          <div class="fi-bullet" aria-hidden="true"></div>
+          <div class="fi-text">
+            <h4>ISO 31000 Full Cycle</h4>
+            <p>Proses lengkap: context → identifikasi → analisis → evaluasi → treatment → monitoring + compliance scorecard.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ──────────────────── C4R ──────────────────── -->
+<div class="c4r-section" role="region" aria-labelledby="c4r-title">
+  <p class="tag">Metodologi Temuan</p>
+  <h2 class="sec-title" id="c4r-title">Framework C4R —<br>struktur temuan Big 4</h2>
+  <p class="sec-desc">Setiap temuan audit DAWWIN distrukturisasi dalam lima dimensi analitis yang membangun narasi kausalitas yang lengkap, jelas, dan actionable.</p>
+
+  <div class="c4r-flow" role="list" aria-label="Lima langkah framework C4R">
+    <div class="c4r-node" role="listitem">
+      <span class="c4r-letter" aria-hidden="true">C</span>
+      <span class="c4r-word">Condition</span>
+      <div class="c4r-desc">Kondisi aktual yang ditemukan di lapangan saat audit dilaksanakan</div>
+    </div>
+    <div class="c4r-node" role="listitem">
+      <span class="c4r-letter" aria-hidden="true">C</span>
+      <span class="c4r-word">Criteria</span>
+      <div class="c4r-desc">Standar, regulasi, atau kebijakan yang seharusnya terpenuhi</div>
+    </div>
+    <div class="c4r-node" role="listitem">
+      <span class="c4r-letter" aria-hidden="true">C</span>
+      <span class="c4r-word">Cause</span>
+      <div class="c4r-desc">Akar permasalahan yang menjadi penyebab kondisi tersebut terjadi</div>
+    </div>
+    <div class="c4r-node" role="listitem">
+      <span class="c4r-letter" aria-hidden="true">E</span>
+      <span class="c4r-word">Effect</span>
+      <div class="c4r-desc">Dampak aktual atau potensial dari kondisi yang tidak sesuai standar</div>
+    </div>
+    <div class="c4r-node" role="listitem">
+      <span class="c4r-letter" aria-hidden="true">R</span>
+      <span class="c4r-word">Recommendation</span>
+      <div class="c4r-desc">Rekomendasi perbaikan yang terukur, spesifik, dan dapat dieksekusi</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────── ANALYTICS ──────────────────── -->
+<section class="analytics-section" id="analytics" aria-labelledby="analytics-title">
+  <p class="tag">Modul Analitik</p>
+  <h2 class="sec-title" id="analytics-title">Empat dimensi analisis,<br>satu layar terpadu</h2>
+  <p class="sec-desc">DAWWIN menghadirkan visualisasi mendalam untuk setiap aspek kritis dalam proses audit dan manajemen risiko.</p>
+
+  <div class="analytics-grid" role="list" aria-label="Empat modul analitik">
+    <div class="atab" role="listitem">
+      <div class="atab-icon" aria-hidden="true">
+        <svg width="15" height="15" fill="none" stroke="var(--gold)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+      </div>
+      <div class="atab-title">Portfolio Analytics</div>
+      <div class="atab-desc">Overview LHA, root cause taxonomy, risk exposure summary, dan red flag registry</div>
+    </div>
+    <div class="atab" role="listitem">
+      <div class="atab-icon" aria-hidden="true">
+        <svg width="15" height="15" fill="none" stroke="var(--gold)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <div class="atab-title">Risk Heatmap 5×5</div>
+      <div class="atab-desc">Matriks probabilitas × dampak, risk appetite vs actual, cross-tabulation view</div>
+    </div>
+    <div class="atab" role="listitem">
+      <div class="atab-icon" aria-hidden="true">
+        <svg width="15" height="15" fill="none" stroke="var(--gold)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="atab-title">Fraud Detection</div>
+      <div class="atab-desc">Pattern intelligence engine, forensic indicator registry, threat scoring per entitas</div>
+    </div>
+    <div class="atab" role="listitem">
+      <div class="atab-icon" aria-hidden="true">
+        <svg width="15" height="15" fill="none" stroke="var(--gold)" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="atab-title">ISO 31000 Full Cycle</div>
+      <div class="atab-desc">Context → Identification → Analysis → Evaluation → Treatment → Monitoring scorecard</div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── AI ENGINE ──────────────────── -->
+<section class="ai-section" id="ai" aria-labelledby="ai-title">
+  <div class="ai-layout">
+    <div>
+      <p class="tag">AI-Powered Analysis</p>
+      <h2 class="sec-title" id="ai-title">Groq LLaMA 3.3 70B<br>untuk analisis C4R otomatis</h2>
+      <p class="sec-desc">
+        DAWWIN mengintegrasikan LLM enterprise-grade melalui Supabase Edge Function
+        yang aman — menghasilkan cause, effect, dan rekomendasi audit berbasis
+        konteks COSO/IIA secara instan dengan prompt engineering yang terstruktur.
+      </p>
+      <div class="ai-pill-row" role="list" aria-label="Teknologi AI yang digunakan">
+        <div class="ai-pill" role="listitem">Groq API</div>
+        <div class="ai-pill" role="listitem">LLaMA 3.3 70B</div>
+        <div class="ai-pill" role="listitem">Supabase Edge Function</div>
+        <div class="ai-pill" role="listitem">Prompt Engineering</div>
+        <div class="ai-pill" role="listitem">COSO Context</div>
+        <div class="ai-pill" role="listitem">IIA Standards</div>
+      </div>
+    </div>
+
+    <div class="terminal" role="img" aria-label="Contoh output terminal: analisis C4R otomatis menghasilkan Cause, Effect, dan Recommendation dari input kelemahan SOP pengadaan barang">
+      <div class="term-bar" aria-hidden="true">
+        <div class="term-dot td-r"></div>
+        <div class="term-dot td-y"></div>
+        <div class="term-dot td-g"></div>
+      </div>
+      <div class="term-line" aria-hidden="true"><span class="prompt">$</span> <span class="cmd">dawwin analyze-c4r</span></div>
+      <div class="term-line" aria-hidden="true"><span class="comment">// Input: "Kelemahan SOP pengadaan barang"</span></div>
+      <div class="term-line" aria-hidden="true"><span class="comment">// Sending to Groq LLaMA 3.3 70B via Edge...</span></div>
+      <div class="term-line" aria-hidden="true">&nbsp;</div>
+      <div class="term-line" aria-hidden="true"><span class="out">✓ CAUSE</span></div>
+      <div class="term-line" aria-hidden="true"><span class="cmd">&nbsp;&nbsp;Tidak ada pemisahan tugas yang memadai</span></div>
+      <div class="term-line" aria-hidden="true"><span class="out">✓ EFFECT</span></div>
+      <div class="term-line" aria-hidden="true"><span class="cmd">&nbsp;&nbsp;Risiko fraud procurement, potensi kerugian</span></div>
+      <div class="term-line" aria-hidden="true"><span class="out">✓ RECOMMENDATION</span></div>
+      <div class="term-line" aria-hidden="true"><span class="cmd">&nbsp;&nbsp;1. Revisi SOP dgn segregation of duties</span></div>
+      <div class="term-line" aria-hidden="true"><span class="cmd">&nbsp;&nbsp;2. Implementasi 4-eyes principle</span></div>
+      <div class="term-line" aria-hidden="true"><span class="cmd">&nbsp;&nbsp;3. Audit trail digital semua transaksi</span></div>
+      <div class="term-line" aria-hidden="true">&nbsp;</div>
+      <div class="term-line" aria-hidden="true"><span class="out">✓ Done</span> <span class="comment">— IIA Global Standards 2024</span> <span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── TECH STACK ──────────────────── -->
+<section id="tech" aria-labelledby="tech-title">
+  <p class="tag">Tech Stack</p>
+  <h2 class="sec-title" id="tech-title">Arsitektur modern,<br>siap produksi</h2>
+  <p class="sec-desc">Dibangun di atas stack frontend terbaru dengan dual persistence — offline-first via localStorage, cloud sync via Supabase PostgreSQL.</p>
+
+  <div class="tech-outer" role="list" aria-label="Daftar tech stack">
+    <div class="tech-row">
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Frontend</div>
+        <div class="tc-tech">React 19 + Vite 6</div>
+        <div class="tc-sub">Komponen modern, fast HMR, build optimal untuk GitHub Pages</div>
+      </div>
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Database</div>
+        <div class="tc-tech">Supabase (PostgreSQL)</div>
+        <div class="tc-sub">Cloud sync + localStorage fallback untuk mode offline penuh</div>
+      </div>
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">AI Engine</div>
+        <div class="tc-tech">Groq · LLaMA 3.3 70B</div>
+        <div class="tc-sub">Dipanggil via Supabase Edge Function dengan keamanan API key</div>
+      </div>
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Visualisasi</div>
+        <div class="tc-tech">Custom SVG Charts</div>
+        <div class="tc-sub">RadarChart · DonutChart · ScatterPlot · HeatCell — zero-dependency</div>
+      </div>
+    </div>
+    <div class="tech-row">
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Hosting & CI/CD</div>
+        <div class="tc-tech">GitHub Pages</div>
+        <div class="tc-sub">Auto-deploy via GitHub Actions workflow pada setiap push</div>
+      </div>
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Sample Data</div>
+        <div class="tc-tech">6 LHA Reports (JSON)</div>
+        <div class="tc-sub">Findings, fraud indicators, dan risk profiles pre-loaded siap pakai</div>
+      </div>
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Scripting</div>
+        <div class="tc-tech">Python + Node.js</div>
+        <div class="tc-sub">parse-lha.py · seed-supabase.mjs · supabase-schema.sql</div>
+      </div>
+      <div class="tech-card" role="listitem">
+        <div class="tc-layer">Export</div>
+        <div class="tc-tech">JSON Export</div>
+        <div class="tc-sub">Download seluruh data penugasan audit sebagai file JSON</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── STANDARDS ──────────────────── -->
+<section class="analytics-section" id="standar" aria-labelledby="standar-title">
+  <p class="tag">Standar & Framework</p>
+  <h2 class="sec-title" id="standar-title">Dibangun di atas fondasi<br>standar internasional</h2>
+  <p class="sec-desc">Setiap modul DAWWIN dirancang selaras dengan framework audit dan manajemen risiko yang diakui secara global.</p>
+
+  <div class="standards-wrap" role="list" aria-label="Standar dan framework yang diadopsi">
+    <div class="std" role="listitem">
+      <div class="std-badge">COSO 2013</div>
+      <h3>Internal Control Framework</h3>
+      <p>Evaluasi 5 komponen: Control Environment, Risk Assessment, Control Activities, Information & Communication, dan Monitoring Activities.</p>
+    </div>
+    <div class="std" role="listitem">
+      <div class="std-badge">IIA Global</div>
+      <h3>Standards for Internal Auditing</h3>
+      <p>Prinsip, standar atribut, dan standar kinerja IIA yang menjadi acuan profesi audit internal di seluruh dunia.</p>
+    </div>
+    <div class="std" role="listitem">
+      <div class="std-badge">ISO 31000:2018</div>
+      <h3>Risk Management Guidelines</h3>
+      <p>Proses manajemen risiko penuh: identifikasi → analisis → evaluasi → treatment → monitoring & compliance scorecard.</p>
+    </div>
+    <div class="std" role="listitem">
+      <div class="std-badge">C4R Method</div>
+      <h3>Big 4 Finding Structure</h3>
+      <p>Metodologi Condition-Criteria-Cause-Effect-Recommendation yang digunakan firma audit kelas dunia sebagai standar dokumentasi temuan.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── CTA ──────────────────── -->
+<section class="cta-section" aria-labelledby="cta-title">
+  <div class="cta-ring" style="width:500px;height:500px" aria-hidden="true"></div>
+  <div class="cta-ring" style="width:750px;height:750px" aria-hidden="true"></div>
+  <div class="cta-ring" style="width:1000px;height:1000px" aria-hidden="true"></div>
+
+  <div class="cta-content">
+    <p class="tag" style="justify-content:center;color:var(--gold2)">Open Source · Free to Use · MIT License</p>
+    <h2 class="sec-title" id="cta-title">Mulai audit lebih cerdas<br>hari ini</h2>
+    <p class="sec-desc">
+      DAWWIN tersedia gratis dan open source. Deploy sendiri dalam hitungan menit,
+      atau gunakan langsung versi live demo tanpa instalasi.
+    </p>
+    <div class="cta-badges" role="list" aria-label="Teknologi yang digunakan">
+      <span class="cta-badge" role="listitem">React 19 + Vite 6</span>
+      <span class="cta-badge" role="listitem">Supabase PostgreSQL</span>
+      <span class="cta-badge" role="listitem">Groq LLaMA 3.3 70B</span>
+      <span class="cta-badge" role="listitem">GitHub Actions CI/CD</span>
+      <span class="cta-badge" role="listitem">MIT License</span>
+    </div>
+    <div class="cta-btns">
+      <a class="btn-gold" href="https://mshadianto.github.io/dawwin/" target="_blank" rel="noopener noreferrer" aria-label="Buka live demo DAWWIN di tab baru">
+        Buka Live Demo
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+      <a class="btn-outline" href="https://github.com/mshadianto/dawwin" target="_blank" rel="noopener noreferrer" style="color:rgba(245,240,232,.45)" aria-label="Clone repository DAWWIN dari GitHub">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        Clone di GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────── FOOTER ──────────────────── -->
+<footer role="contentinfo">
+  <div>
+    <div style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--gold);margin-bottom:.25rem" aria-hidden="true">دوِّن · DAWWIN</div>
+    <p class="foot-copy">
+      Audit Intelligence Platform · Built by <a href="https://github.com/mshadianto" target="_blank" rel="noopener noreferrer">MSHadianto</a>
+
+      · Jakarta, Indonesia · MIT License
+    </p>
+  </div>
+  <ul class="foot-links" role="list">
+    <li><a href="https://github.com/mshadianto/dawwin" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+    <li><a href="https://mshadianto.github.io/dawwin/" target="_blank" rel="noopener noreferrer">Live Demo</a></li>
+    <li><a href="https://linkedin.com/in/ms-hadianto/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+    <li><a href="https://github.com/mshadianto" target="_blank" rel="noopener noreferrer">@mshadianto</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Nav scroll shadow
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // SPEED: Intersection Observer for fade-in animations (lazy)
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fitur-item, .c4r-node, .atab, .tech-card, .std').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(16px)';
+      el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      observer.observe(el);
+    });
+
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.fitur-item, .c4r-node, .atab, .tech-card, .std').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.transition = 'none';
+      });
+    }
+  }
+</script>
+</body>
+</html>
